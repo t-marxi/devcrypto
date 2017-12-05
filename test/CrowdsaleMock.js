@@ -191,7 +191,6 @@ contract('CrowdsaleTest', function ([owner, donor]) {
           await crowdsale.startICO.sendTransaction({from: donor});
           assert.equal(33185000, (await crowdsale.leftTokens()).toNumber()/1e+18, "Owner should have 33185000 DevCoin initially");
 
-          console.log(crowdsale.getStatus());
           console.log("----Change system time -------------");
           var ICOStart = await crowdsale.ICOstartTime();
           ICOStart.c[0] += 10000;
