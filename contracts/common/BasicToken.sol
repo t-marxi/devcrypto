@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.19;
 
 import "contracts/common/Blocked.sol";
 import "contracts/common/SafeMath.sol";
