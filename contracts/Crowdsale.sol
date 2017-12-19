@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.18;
 
 import "contracts/DEVCoin.sol";
 import "contracts/common/Owned.sol";
@@ -31,7 +31,6 @@ contract Crowdsale is ManualSendingCrowdsale {
     uint256 public leftTokens = 0;
 
     uint256 public totalAmount = 0;
-    uint256 public currentAmount = 0;
     uint public transactionCounter = 0;
 
     /** ------------------------------- */
@@ -80,7 +79,7 @@ contract Crowdsale is ManualSendingCrowdsale {
     }
 
     function Crowdsale() public {
-        require(currentTime() < preICOstartTime);
+        //require(currentTime() < preICOstartTime);
         token = new DEVCoin(maxTokenAmount, ICOendTime);
         leftTokens = maxPreICOTokenAmount;
         addCurrencyInternal(0); // add BTC
@@ -113,7 +112,6 @@ contract Crowdsale is ManualSendingCrowdsale {
             amount = needAmount;
         }
         totalAmount = totalAmount.add(amount);
-        currentAmount = currentAmount.add(amount);
     }
 
     function manualTransferTokensToWithBonus(address to, uint256 givenTokens, uint currency, uint256 amount) external canBuy onlyOwner returns (uint256) {
@@ -210,18 +208,15 @@ contract Crowdsale is ManualSendingCrowdsale {
     }
 
     function withdraw() external onlyOwner {
-        require(msg.sender.call.gas(3000000).value(currentAmount)());
-        currentAmount = 0;
+        require(msg.sender.call.gas(3000000).value(this.balance)());
     }
 
     function withdrawAmount(uint256 amount) external onlyOwner {
-        require(currentAmount >= amount);
-        require(msg.sender.call.gas(3000000).value(amount)());
-        if (currentAmount > amount) {
-            currentAmount = currentAmount.sub(amount);
-        } else {
-            currentAmount = 0;
+        uint256 givenAmount = amount;
+        if (this.balance < amount) {
+            givenAmount = this.balance;
         }
+        require(msg.sender.call.gas(3000000).value(givenAmount)());
     }
 
     function currentTime() internal constant returns (uint) {
