@@ -86,7 +86,7 @@ contract Crowdsale is ManualSendingCrowdsale {
     }
 
     function isFinished() public constant returns (bool) {
-        return currentTime() > ICOendTime || leftTokens == 0;
+        return currentTime() > ICOendTime || (leftTokens == 0 && state == State.ICO);
     }
 
     function isPreICO() public constant returns (bool) {
