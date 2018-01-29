@@ -217,17 +217,17 @@ contract Crowdsale is ManualSendingCrowdsale {
     State public state = State.PRE_ICO;
 
     // Date of start pre-ICO and ICO.
-    uint public constant preICOstartTime =    1514160000; // start at Monday, December 25, 2017 12:00:00 AM
-    uint public constant preICOendTime =      1516752000; // end at   Wednesday, January 24, 2018 12:00:00 AM
-    uint public constant ICOstartTime =    1516838400; // start at Thursday, January 25, 2018 12:00:00 AM
-    uint public constant ICOendTime =      1519430400; // end at Saturday, February 24, 2018 12:00:00 AM
+    uint public constant preICOstartTime =    1519862400; // start at Thursday, March 1, 2018 2:00:00 AM GMT+02:00
+    uint public constant preICOendTime =      1521158400; // end at  Friday, March 16, 2018 2:00:00 AM GMT+02:00
+    uint public constant ICOstartTime =    1521676800; // start at March 22, 2018 2:00:00 AM GMT+02:00
+    uint public constant ICOendTime =      1524441600; // end at Monday, April 23, 2018 3:00:00 AM GMT+03:00
 
     uint public constant bountyAvailabilityTime = ICOendTime + 90 days;
 
-    uint256 public constant maxTokenAmount = 35000000 * 10**18; // max minting
-    uint256 public constant bountyTokens =    1750000 * 10**18; // bounty amount
+    uint256 public constant maxTokenAmount = 100e24; // max minting
+    uint256 public constant bountyTokens =    5e24; // bounty amount
 
-    uint256 public constant maxPreICOTokenAmount = 5000000 * 10**18; // max number of tokens on pre-ICO;
+    uint256 public constant maxPreICOTokenAmount = 15e24; // max number of tokens on pre-ICO;
 
     DEVCoin public token;
 
@@ -266,7 +266,7 @@ contract Crowdsale is ManualSendingCrowdsale {
 
     bool public bonusesPayed = false;
 
-    uint256 public constant rateToEther = 5000; // rate to ether, how much tokens gives to 1 ether
+    uint256 public constant rateToEther = 500; // rate to ether, how much tokens gives to 1 ether
 
     uint256 public constant minAmountForDeal = 10**17;
 
