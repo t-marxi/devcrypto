@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.19;
 
 import "contracts/common/ERC20.sol";
 import "contracts/common/BasicToken.sol";
@@ -8,7 +8,7 @@ contract StandardToken is ERC20, BasicToken {
     mapping (address => mapping (address => uint256)) allowed;
 
     function transferFrom(address _from, address _to, uint256 _value) onlyPayloadSize(3 * 32) unblocked public returns (bool) {
-        var _allowance = allowed[_from][msg.sender];
+        uint256 _allowance = allowed[_from][msg.sender];
 
         balances[_to] = balances[_to].add(_value);
         balances[_from] = balances[_from].sub(_value);

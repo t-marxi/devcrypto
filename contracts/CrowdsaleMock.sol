@@ -1,21 +1,21 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.19;
 
 import "./Crowdsale.sol";
 
 contract CrowdsaleMock is Crowdsale {
 
-  uint256 public now;
+  uint public nowTime;
 
   function CrowdsaleMock() public {
-    now = preICOstartTime - 1;
+    nowTime = preICOstartTime - 1;
   }
 
   function currentTime() internal constant returns (uint currentTime) {
-    return now;
+    return nowTime;
   }
 
   function changeTime(uint newTime) public {
-    now = newTime;
+    nowTime = newTime;
   }
 
 }

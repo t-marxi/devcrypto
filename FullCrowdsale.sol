@@ -1,26 +1,26 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.19;
 
 library SafeMath {
 
-    function mul(uint256 a, uint256 b) internal constant returns (uint256) {
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 c = a * b;
         assert(a == 0 || c / a == b);
         return c;
     }
 
-    function div(uint256 a, uint256 b) internal constant returns (uint256) {
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
         // assert(b > 0); // Solidity automatically throws when dividing by 0
         uint256 c = a / b;
         // assert(a == b * c + a % b); // There is no case in which this doesn't hold
         return c;
     }
 
-    function sub(uint256 a, uint256 b) internal constant returns (uint256) {
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
         assert(b <= a);
         return a - b;
     }
 
-    function add(uint256 a, uint256 b) internal constant returns (uint256) {
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 c = a + b;
         assert(c >= a);
         return c;
@@ -115,7 +115,7 @@ contract StandardToken is ERC20, BasicToken {
     mapping (address => mapping (address => uint256)) allowed;
 
     function transferFrom(address _from, address _to, uint256 _value) onlyPayloadSize(3 * 32) unblocked public returns (bool) {
-        var _allowance = allowed[_from][msg.sender];
+        uint256 _allowance = allowed[_from][msg.sender];
 
         balances[_to] = balances[_to].add(_value);
         balances[_from] = balances[_from].sub(_value);
@@ -217,17 +217,17 @@ contract Crowdsale is ManualSendingCrowdsale {
     State public state = State.PRE_ICO;
 
     // Date of start pre-ICO and ICO.
-    uint public constant preICOstartTime =    1519862400; // start at Thursday, March 1, 2018 2:00:00 AM GMT+02:00
-    uint public constant preICOendTime =      1521158400; // end at  Friday, March 16, 2018 2:00:00 AM GMT+02:00
-    uint public constant ICOstartTime =    1521676800; // start at March 22, 2018 2:00:00 AM GMT+02:00
-    uint public constant ICOendTime =      1524441600; // end at Monday, April 23, 2018 3:00:00 AM GMT+03:00
+    uint public constant preICOstartTime =    1522454400; // start at Saturday, March 31, 2018 12:00:00 AM
+    uint public constant preICOendTime =      1523750400; // end at Sunday, April 15, 2018 12:00:00 AM
+    uint public constant ICOstartTime =    1524355200; // start at Tuesday, May 22, 2018 12:00:00 AM
+    uint public constant ICOendTime =      1527033600; // end at Wednesday, May 23, 2018 12:00:00 AM
 
     uint public constant bountyAvailabilityTime = ICOendTime + 90 days;
 
-    uint256 public constant maxTokenAmount = 100e24; // max minting
-    uint256 public constant bountyTokens =    5e24; // bounty amount
+    uint256 public constant maxTokenAmount = 108e24; // max minting   (108, 000, 000 tokens)
+    uint256 public constant bountyTokens =   324e23; // bounty amount ( 32, 400, 000 tokens)
 
-    uint256 public constant maxPreICOTokenAmount = 15e24; // max number of tokens on pre-ICO;
+    uint256 public constant maxPreICOTokenAmount = 81e23; // max number of tokens on pre-ICO (8, 100, 000 tokens);
 
     DEVCoin public token;
 
@@ -241,32 +241,35 @@ contract Crowdsale is ManualSendingCrowdsale {
 
     // Amount bonuses
     uint private firstAmountBonus = 20;
-    uint256 private firstAmountBonusBarrier = 50 ether;
-    uint private secondAmountBonus = 10;
+    uint256 private firstAmountBonusBarrier = 500 ether;
+    uint private secondAmountBonus = 15;
     uint256 private secondAmountBonusBarrier = 100 ether;
+    uint private thirdAmountBonus = 10;
+    uint256 private thirdAmountBonusBarrier = 50 ether;
+    uint private fourthAmountBonus = 5;
+    uint256 private fourthAmountBonusBarrier = 20 ether;
 
     // pre-ICO bonuses by time
-    uint private preICOBonus = 15;
     uint private firstPreICOTimeBarrier = preICOstartTime + 1 days;
-    uint private firstPreICOTimeBonus = 15;
+    uint private firstPreICOTimeBonus = 20;
     uint private secondPreICOTimeBarrier = preICOstartTime + 7 days;
     uint private secondPreICOTimeBonus = 10;
+    uint private thirdPreICOTimeBarrier = preICOstartTime + 14 days;
+    uint private thirdPreICOTimeBonus = 5;
 
     // ICO bonuses by time
     uint private firstICOTimeBarrier = ICOstartTime + 1 days;
-    uint private firstICOTimeBonus = 20;
-    uint private secondICOTimeBarrier = ICOstartTime + 3 days;
-    uint private secondICOTimeBonus = 15;
-    uint private thirdICOTimeBarrier = ICOstartTime + 6 days;
-    uint private thirdICOTimeBonus = 10;
-    uint private fourthICOTimeBarrier = ICOstartTime + 14 days;
-    uint private fourthICOTimeBonus = 5;
+    uint private firstICOTimeBonus = 15;
+    uint private secondICOTimeBarrier = ICOstartTime + 7 days;
+    uint private secondICOTimeBonus = 7;
+    uint private thirdICOTimeBarrier = ICOstartTime + 14 days;
+    uint private thirdICOTimeBonus = 4;
 
     /** ------------------------------- */
 
     bool public bonusesPayed = false;
 
-    uint256 public constant rateToEther = 500; // rate to ether, how much tokens gives to 1 ether
+    uint256 public constant rateToEther = 9000; // rate to ether, how much tokens gives to 1 ether
 
     uint256 public constant minAmountForDeal = 10**17;
 
@@ -293,12 +296,12 @@ contract Crowdsale is ManualSendingCrowdsale {
     }
 
     function isPreICO() public constant returns (bool) {
-        var curTime = currentTime();
+        uint curTime = currentTime();
         return curTime < preICOendTime && curTime > preICOstartTime;
     }
 
     function isICO() public constant returns (bool) {
-        var curTime = currentTime();
+        uint curTime = currentTime();
         return curTime < ICOendTime && curTime > ICOstartTime;
     }
 
@@ -336,25 +339,37 @@ contract Crowdsale is ManualSendingCrowdsale {
         if (isICO()) {
             bonus = getICOBonus();
         }
+        return bonus + getAmountBonus(amount);
+    }
 
+    function getAmountBonus(uint256 amount) public constant returns (uint) {
         if (amount >= firstAmountBonusBarrier) {
-            bonus = bonus + firstAmountBonus;
+            return firstAmountBonus;
         }
         if (amount >= secondAmountBonusBarrier) {
-            bonus = bonus + secondAmountBonus;
+            return secondAmountBonus;
         }
-        return bonus;
+        if (amount >= thirdAmountBonusBarrier) {
+            return thirdAmountBonus;
+        }
+        if (amount >= fourthAmountBonusBarrier) {
+            return fourthAmountBonus;
+        }
+        return 0;
     }
 
     function getPreICOBonus() public constant returns (uint) {
         uint curTime = currentTime();
         if (curTime < firstPreICOTimeBarrier) {
-            return firstPreICOTimeBonus + preICOBonus;
+            return firstPreICOTimeBonus;
         }
         if (curTime < secondPreICOTimeBarrier) {
-            return secondPreICOTimeBonus + preICOBonus;
+            return secondPreICOTimeBonus;
         }
-        return preICOBonus;
+        if (curTime < thirdPreICOTimeBarrier) {
+            return thirdPreICOTimeBonus;
+        }
+        return 0;
     }
 
     function getICOBonus() public constant returns (uint) {
@@ -367,9 +382,6 @@ contract Crowdsale is ManualSendingCrowdsale {
         }
         if (curTime < thirdICOTimeBarrier) {
             return thirdICOTimeBonus;
-        }
-        if (curTime < fourthICOTimeBarrier) {
-            return fourthICOTimeBonus;
         }
         return 0;
     }
@@ -400,7 +412,7 @@ contract Crowdsale is ManualSendingCrowdsale {
     }
 
     function transferTokensTo(address to, uint256 givenTokens) internal returns (uint256) {
-        var providedTokens = givenTokens;
+        uint256 providedTokens = givenTokens;
         if (givenTokens > leftTokens) {
             providedTokens = leftTokens;
         }
@@ -411,13 +423,13 @@ contract Crowdsale is ManualSendingCrowdsale {
     }
 
     function withdraw() external onlyOwner {
-        require(msg.sender.call.gas(3000000).value(this.balance)());
+        require(msg.sender.call.gas(3000000).value(address(this).balance)());
     }
 
     function withdrawAmount(uint256 amount) external onlyOwner {
         uint256 givenAmount = amount;
-        if (this.balance < amount) {
-            givenAmount = this.balance;
+        if (address(this).balance < amount) {
+            givenAmount = address(this).balance;
         }
         require(msg.sender.call.gas(3000000).value(givenAmount)());
     }

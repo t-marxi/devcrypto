@@ -1,11 +1,10 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.19;
 
 import "contracts/common/Blocked.sol";
 import "contracts/common/SafeMath.sol";
 import "contracts/common/ERC20Basic.sol";
 
 contract BasicToken is ERC20Basic, Blocked {
-
     using SafeMath for uint256;
 
     mapping (address => uint256) balances;
@@ -26,5 +25,4 @@ contract BasicToken is ERC20Basic, Blocked {
     function balanceOf(address _owner) constant public returns (uint256 balance) {
         return balances[_owner];
     }
-
 }
